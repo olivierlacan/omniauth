@@ -197,6 +197,7 @@ module OmniAuth
     def request_call # rubocop:disable CyclomaticComplexity, MethodLength, PerceivedComplexity
       setup_phase
       log :info, 'Request phase initiated.'
+      neutralize_unsafe_destination if OmniAuth.config.neutralize_unsafe_destination
       # store query params from the request url, extracted in the callback_phase
       session['omniauth.params'] = request.params
       OmniAuth.config.before_request_phase.call(env) if OmniAuth.config.before_request_phase
@@ -488,6 +489,15 @@ module OmniAuth
         a.merge!(e)
         a
       end
+    end
+
+    def neutralize_unsafe_destination
+      request.params.delete('destination')
+    end
+
+    def safe_destination?
+      return true if !request.params['destination']
+      request.params['destination'].include?(request.host)
     end
 
     def ssl?

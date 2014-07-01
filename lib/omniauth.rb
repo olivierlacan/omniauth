@@ -43,6 +43,7 @@ module OmniAuth
         :logger => default_logger,
         :allowed_request_methods => [:get, :post],
         :mock_auth => {:default => AuthHash.new('provider' => 'default', 'uid' => '1234', 'info' => {'name' => 'Example User'})},
+        :neutralize_unsafe_destination => true
       }
     end
 
